@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>EduHubSpot2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #F7F3EC;
+    --paper-dark: #EFE8DA;
+    --ink: #2B2620;
+    --ink-soft: #6B6255;
+    --line: #DCD3C0;
+    --accent: #3E5C4E;
+    --accent-soft: #E7EEE9;
+    --error: #A6432F;
+    --radius: 4px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper: #1E1B16;
+      --paper-dark: #171512;
+      --ink: #EFE9DD;
+      --ink-soft: #A79E8E;
+      --line: #3A342B;
+      --accent: #8FBBA3;
+      --accent-soft: #26332C;
+      --error: #E08469;
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper: #1E1B16;
+    --paper-dark: #171512;
+    --ink: #EFE9DD;
+    --ink-soft: #A79E8E;
+    --line: #3A342B;
+    --accent: #8FBBA3;
+    --accent-soft: #26332C;
+    --error: #E08469;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    height: 100%;
+    margin: 0;
+  }
+  html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    -webkit-font-smoothing: antialiased;
+  }
+  h1, h2, h3, .brand { font-family: 'Fraunces', serif; }
+
+  .screen { min-height: 100%; display: none; }
+  .screen.active { display: block; }
+
+  /* ---------- Login ---------- */
+  #login-screen.active {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 24px;
+  }
+  .login-card {
+    width: 100%;
+    max-width: 380px;
+  }
+  .brand-row {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin-bottom: 6px;
+  }
+  .brand-mark {
+    width: 10px;
+    height: 10px;
+    background: var(--accent);
+    border-radius: 2px;
+    display: inline-block;
+    transform: translateY(-2px);
+  }
+  .brand {
+    font-size: 24px;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+  }
+  .login-sub {
+    color: var(--ink-soft);
+    font-size: 14.5px;
+    margin: 0 0 32px 0;
+    line-height: 1.5;
+  }
+  .field { margin-bottom: 18px; }
+  .field label {
+    display: block;
+    font-size: 13px;
+    font-weight: 500;
+    margin-bottom: 6px;
+    color: var(--ink);
+  }
+  .field input {
+    width: 100%;
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    padding: 11px 13px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--paper-dark);
+    color: var(--ink);
+    outline: none;
+    transition: border-color 0.15s ease;
+  }
+  .field input:focus {
+    border-color: var(--accent);
+  }
+  .field input.invalid {
+    border-color: var(--error);
+  }
+  .field-error {
+    color: var(--error);
+    font-size: 12.5px;
+    margin-top: 5px;
+    min-height: 15px;
+    display: none;
+  }
+  .field-error.show { display: block; }
+
+  .btn-primary {
+    width: 100%;
+    background: var(--accent);
+    color: var(--paper);
+    border: none;
+    border-radius: var(--radius);
+    padding: 12px 16px;
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 6px;
+    transition: opacity 0.15s ease;
+  }
+  .btn-primary:hover { opacity: 0.88; }
+  .btn-primary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  .login-foot {
+    margin-top: 22px;
+    font-size: 12.5px;
+    color: var(--ink-soft);
+    text-align: center;
+    line-height: 1.5;
+  }
+
+  /* ---------- Course list ---------- */
+  #courses-screen { padding: 0 0 60px 0; }
+  .topbar {
+    position: sticky;
+    top: 0;
+    padding-top: env(safe-area-inset-top, 0px);
+    background: var(--paper);
+    border-bottom: 1px solid var(--line);
+    z-index: 10;
+  }
+  .topbar-inner {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 18px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .greet { font-size: 13.5px; color: var(--ink-soft); }
+  .logout-link {
+    font-family: 'Inter', sans-serif;
+    font-size: 13.5px;
+    color: var(--ink-soft);
+    background: none;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 7px 14px;
+    cursor: pointer;
+  }
+  .logout-link:hover { border-color: var(--ink-soft); color: var(--ink); }
+
+  .courses-header {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 40px 24px 8px 24px;
+  }
+  .courses-header h1 {
+    font-size: 30px;
+    font-weight: 500;
+    margin: 0 0 8px 0;
+  }
+  .courses-header p {
+    color: var(--ink-soft);
+    margin: 0;
+    font-size: 14.5px;
+  }
+
+  .course-list {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 24px 24px 0 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .course-card {
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--accent);
+    border-radius: var(--radius);
+    padding: 20px 22px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    background: var(--paper-dark);
+  }
+  .course-info h2 {
+    font-size: 19px;
+    font-weight: 500;
+    margin: 0 0 4px 0;
+  }
+  .course-instructor {
+    font-size: 13px;
+    color: var(--accent);
+    font-weight: 600;
+    margin: 0 0 8px 0;
+  }
+  .course-desc {
+    font-size: 14px;
+    color: var(--ink-soft);
+    margin: 0;
+    max-width: 60ch;
+    line-height: 1.5;
+  }
+  .view-btn {
+    flex-shrink: 0;
+    font-family: 'Inter', sans-serif;
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--accent);
+    background: var(--accent-soft);
+    border: none;
+    border-radius: var(--radius);
+    padding: 10px 18px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: opacity 0.15s ease;
+  }
+  .view-btn:hover { opacity: 0.75; }
+
+  @media (max-width: 600px) {
+    .course-card { flex-direction: column; align-items: flex-start; }
+    .view-btn { width: 100%; text-align: center; }
+  }
+
+  .toast {
+    position: fixed;
+    bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--ink);
+    color: var(--paper);
+    padding: 12px 20px;
+    border-radius: var(--radius);
+    font-size: 13.5px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    z-index: 50;
+  }
+  .toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+</style>
+</head>
+<body>
+
+  <!-- LOGIN SCREEN -->
+  <div id="login-screen" class="screen active">
+    <div class="login-card">
+      <div class="brand-row">
+        <span class="brand-mark"></span>
+        <span class="brand">EduHubSpot2</span>
+      </div>
+      <p class="login-sub">Sign in to pick up where you left off.</p>
+
+      <form id="login-form" novalidate>
+        <div class="field">
+          <label for="email">Email</label>
+          <input type="text" id="email" autocomplete="username" placeholder="you@example.com">
+          <div class="field-error" id="email-error">Enter your email to continue.</div>
+        </div>
+        <div class="field">
+          <label for="password">Password</label>
+          <input type="password" id="password" autocomplete="current-password" placeholder="Your password">
+          <div class="field-error" id="password-error">Enter your password to continue.</div>
+        </div>
+        <button type="submit" class="btn-primary">Log in</button>
+      </form>
+      <p class="login-foot">This is a prototype — any email and password will work.</p>
+    </div>
+  </div>
+
+  <!-- COURSE LIST SCREEN -->
+  <div id="courses-screen" class="screen">
+    <div class="topbar">
+      <div class="topbar-inner">
+        <span class="greet" id="greet-text">Signed in</span>
+        <button class="logout-link" id="logout-btn">Log out</button>
+      </div>
+    </div>
+    <div class="courses-header">
+      <h1>Your courses</h1>
+      <p>Five courses are available to start right now.</p>
+    </div>
+    <div class="course-list" id="course-list"></div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+<script>
+  const courses = [
+    { name: "Python Basics", instructor: "John Carter", desc: "A hands-on introduction to Python syntax, data types, and control flow for absolute beginners." },
+    { name: "Web Development", instructor: "Sarah Lee", desc: "Build real websites with HTML, CSS, and JavaScript, from your first page to a working project." },
+    { name: "SQL Fundamentals", instructor: "David Kumar", desc: "Learn to query, filter, and join relational data using standard SQL, with practical exercises." },
+    { name: "AI for Beginners", instructor: "Emma Wilson", desc: "A friendly tour of core AI concepts, how machine learning works, and where it's used today." },
+    { name: "Cloud Essentials", instructor: "Michael Brown", desc: "Understand core cloud computing concepts, common services, and how to deploy your first app." }
+  ];
+
+  const loginScreen = document.getElementById('login-screen');
+  const coursesScreen = document.getElementById('courses-screen');
+  const loginForm = document.getElementById('login-form');
+  const emailInput = document.getElementById('email');
+  const passwordInput = document.getElementById('password');
+  const emailError = document.getElementById('email-error');
+  const passwordError = document.getElementById('password-error');
+  const greetText = document.getElementById('greet-text');
+  const toast = document.getElementById('toast');
+
+  function showToast(msg) {
+    toast.textContent = msg;
+    toast.classList.add('show');
+    clearTimeout(showToast._t);
+    showToast._t = setTimeout(() => toast.classList.remove('show'), 2200);
+  }
+
+  function validateField(input, errorEl) {
+    const empty = input.value.trim() === '';
+    input.classList.toggle('invalid', empty);
+    errorEl.classList.toggle('show', empty);
+    return !empty;
+  }
+
+  emailInput.addEventListener('input', () => validateField(emailInput, emailError));
+  passwordInput.addEventListener('input', () => validateField(passwordInput, passwordError));
+
+  loginForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const emailOk = validateField(emailInput, emailError);
+    const passOk = validateField(passwordInput, passwordError);
+    if (!emailOk || !passOk) return;
+
+    greetText.textContent = `Signed in as ${emailInput.value.trim()}`;
+    loginScreen.classList.remove('active');
+    coursesScreen.classList.add('active');
+    renderCourses();
+  });
+
+  document.getElementById('logout-btn').addEventListener('click', () => {
+    coursesScreen.classList.remove('active');
+    loginScreen.classList.add('active');
+    emailInput.value = '';
+    passwordInput.value = '';
+    emailInput.classList.remove('invalid');
+    passwordInput.classList.remove('invalid');
+    emailError.classList.remove('show');
+    passwordError.classList.remove('show');
+  });
+
+  function renderCourses() {
+    const list = document.getElementById('course-list');
+    list.innerHTML = '';
+    courses.forEach(c => {
+      const card = document.createElement('div');
+      card.className = 'course-card';
+      card.innerHTML = `
+        <div class="course-info">
+          <h2>${c.name}</h2>
+          <p class="course-instructor">${c.instructor}</p>
+          <p class="course-desc">${c.desc}</p>
+        </div>
+        <button class="view-btn">View course</button>
+      `;
+      card.querySelector('.view-btn').addEventListener('click', () => {
+        showToast(`Opening "${c.name}" — course content coming in a future version.`);
+      });
+      list.appendChild(card);
+    });
+  }
+</script>
+</body>
+</html>
